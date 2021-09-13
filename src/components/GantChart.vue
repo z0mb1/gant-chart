@@ -53,9 +53,11 @@
   position: absolute;
   border: 1px solid rgba(0, 0, 0, 0.5);
   top: 10px;
-  border-radius: 8px;
+  border-radius: 4px;
   transition: transform 0.25s;
   z-index: 9;
+  line-height: 30px;
+  text-align: center;
 }
 .gant-chart__block-flight:hover {
   transform: scale(1.03);
@@ -103,6 +105,16 @@
   height: 100vh;
   top: 0;
   z-index: 999;
+}
+.gant-chart__block-flight__arrival {
+  position: absolute;
+  top: 0;
+  left: calc(100% + 4px);
+}
+.gant-chart__block-flight__departure {
+  position: absolute;
+  top: 0;
+  right: calc(100% + 4px);
 }
 </style>
 
@@ -178,6 +190,10 @@
                 duration,
                 sheduledOffValue,
                 sheduledDuration,
+                operationCarrier,
+                flightNumber,
+                arrivalStationIataCode,
+                departureStationIataCode,
               },
               idx) in items"
               :key="idx"
@@ -189,7 +205,11 @@
                   width: `${duration}%`,
                   backgroundColor: getColor(),
                 }"
-              ></div>
+              >
+                {{ `${operationCarrier} ${flightNumber}` }}
+                <div class="gant-chart__block-flight__arrival">{{ arrivalStationIataCode }}</div>
+                <div class="gant-chart__block-flight__departure">{{ departureStationIataCode }}</div>
+              </div>
               <div
                 class="gant-chart__block-sheduled"
                 :style="{
@@ -287,6 +307,10 @@ export default {
           duration,
           sheduledOffValue,
           sheduledDuration,
+          flightNumber: curr.flightNumber,
+          operationCarrier: curr.operationCarrier,
+          arrivalStationIataCode: curr.arrivalStationIataCode,
+          departureStationIataCode: curr.departureStationIataCode,
         };
         if (res[curr.aircraftRegistration]) {
           res[curr.aircraftRegistration].append(currentFlightData);

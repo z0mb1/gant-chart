@@ -1,11 +1,19 @@
-<style></style>
+<style>
+body {
+  padding: 0;
+  margin: 0;
+}
+.app-layout {
+  max-width: 100vw;
+  padding: 8px;
+  background-color: #ffffff;
+}
+</style>
 
 <template>
-  <GantChart
-    :timeFrom="new Date('08/05/2021').getTime()"
-    :timeTo="new Date('08/06/2021').getTime()"
-    :flights="flights"
-  />
+  <div class="app-layout">
+    <GantChart :flights="flights" />
+  </div>
 </template>
 
 <script>
@@ -165,8 +173,6 @@ export default {
       return this.rawData.map((item) => item.data);
     },
   },
-  created() {
-    console.log(this.flights);
-  },
+  created() {},
 };
 </script>

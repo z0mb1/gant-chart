@@ -1,35 +1,56 @@
 <style scoped>
 .gant-chart {
+  --left-width: 70px;
+  --row-height: 50px;
+  --border: 1px solid rgba(0, 0, 0, 0.5);
+}
+.gant-chart__container {
   width: 100%;
   overflow: hidden;
-  min-width: 1280px;
+  display: flex;
+  border: var(--border);
+  box-sizing: border-box;
+}
+.gant-chart__left {
+  width: var(--left-width);
+  border-right: var(--border);
+}
+.gant-chart__right {
+  width: calc(100% - var(--left-width));
+  overflow-x: auto;
+  overflow-y: hidden;
 }
 .gant-chart__line {
   display: flex;
-  height: 50px;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  border-bottom: none;
-}
-.gant-chart__line:last-child {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
-}
-.gant-chart__line-name {
-  border-right: 1px solid rgba(0, 0, 0, 0.5);
-  width: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.gant-chart__line-container {
+  height: var(--row-height);
+  border-bottom: var(--border);
   position: relative;
   flex-grow: 1;
   display: flex;
+  width: 100%;
+}
+.gant-chart__line--current {
+  height: 0px;
+  border: none;
+}
+.gant-chart__line:last-child {
+  border-bottom: none;
+}
+.gant-chart__line-name {
+  border-bottom: var(--border);
+  width: var(--left-width);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--row-height);
+}
+.gant-chart__line-name:last-child {
+  border-bottom: none;
 }
 .gant-chart__block-flight {
   cursor: pointer;
   height: 30px;
   position: absolute;
-  background: rgb(6, 236, 18);
   border: 1px solid rgba(0, 0, 0, 0.5);
   top: 10px;
   border-radius: 8px;
@@ -54,9 +75,10 @@
   flex-shrink: 0;
   flex-grow: 0;
   position: relative;
+  width: 75px;
 }
 .gant-chart__mark:after {
-  content: "";
+  content: '';
   position: absolute;
   width: 1px;
   background: darkblue;
@@ -65,66 +87,130 @@
   top: 0;
   z-index: 0;
 }
+.gant-chart__date {
+  height: var(--row-height);
+  width: 100%;
+  border: var(--border);
+  border-bottom: none;
+  line-height: var(--row-height);
+  padding-left: var(--left-width);
+  box-sizing: border-box;
+}
+.gant-chart__current {
+  position: absolute;
+  width: 3px;
+  background-color: #d2d42a;
+  height: 100vh;
+  top: 0;
+  z-index: 999;
+}
 </style>
 
 <template>
+  <!-- Settings -->
+  <div class="gant-chart-settings">
+    <div style="margin-bottom: 16px">
+      <span>Дата: </span><input type="datetime-local" v-model="date" />
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 16px">
+      <span>Интервал времени: </span
+      ><input type="range" min="1" max="4" step="1" v-model="rangeHours" />
+      {{ rangeHours }} ч.
+    </div>
+    <div style="display: flex; align-items: center; margin-bottom: 16px">
+      <span>Размер графика: </span
+      ><input type="range" min="500" max="1280" step="1" v-model="width" />
+      {{ width }} px
+    </div>
+  </div>
+  <!-- Chart -->
   <div class="gant-chart">
-    <div class="gant-chart__line">
-      <div class="gant-chart__line-name">{{ aircraft }}</div>
-      <div class="gant-chart__line-container">
+    <div class="gant-chart__date">
+      <b>{{
+        new Date(date).toLocaleString('ru', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: 'numeric',
+        })
+      }}</b>
+    </div>
+    <div class="gant-chart__container">
+      <div class="gant-chart__left">
+        <div class="gant-chart__line-name"></div>
         <div
-          class="gant-chart__mark"
-          v-for="(mark, idx) in timeMarks"
-          :key="idx"
-          :style="{ width: `calc(100% / ${timeBlocks})` }"
+          class="gant-chart__line-name"
+          v-for="aircraft in Object.keys(chartData)"
+          :key="aircraft"
         >
-          {{ mark }}
+          {{ aircraft }}
         </div>
       </div>
-    </div>
-    <div
-      class="gant-chart__line"
-      v-for="[aircraft, items] in Object.entries(chartData)"
-      :key="aircraft"
-    >
-      <div class="gant-chart__line-name">{{ aircraft }}</div>
-      <div class="gant-chart__line-container">
-        <template
-          v-for="({
-            departureValue,
-            duration,
-            sheduledOffValue,
-            sheduledDuration,
-          },
-          idx) in items"
-          :key="idx"
-        >
+      <div class="gant-chart__right">
+        <div :style="{ width: `${width}px` }">
+          <div class="gant-chart__line gant-chart__line--current">
+            <div
+              class="gant-chart__current"
+              :style="{ left: `calc(${currentTimePosition}% + 3px)` }"
+            ></div>
+          </div>
+
+          <div class="gant-chart__line">
+            <div
+              class="gant-chart__mark"
+              v-for="(mark, idx) in timeMarks"
+              :key="idx"
+              :style="{ width: `calc(100% / ${timeBlocks})` }"
+            >
+              {{ mark }}
+            </div>
+          </div>
           <div
-            class="gant-chart__block-flight"
-            :style="{ left: `${departureValue}%`, width: `${duration}%` }"
-          ></div>
-          <div
-            class="gant-chart__block-sheduled"
-            :style="{
-              left: `${sheduledOffValue}%`,
-              width: `${sheduledDuration}%`,
-            }"
-          ></div>
-        </template>
+            class="gant-chart__line"
+            v-for="(items, idx) in Object.values(chartData)"
+            :key="idx"
+          >
+            <template
+              v-for="({
+                departureValue,
+                duration,
+                sheduledOffValue,
+                sheduledDuration,
+              },
+              idx) in items"
+              :key="idx"
+            >
+              <div
+                class="gant-chart__block-flight"
+                :style="{
+                  left: `${departureValue}%`,
+                  width: `${duration}%`,
+                  backgroundColor: getColor(),
+                }"
+              ></div>
+              <div
+                class="gant-chart__block-sheduled"
+                :style="{
+                  left: `${sheduledOffValue}%`,
+                  width: `${sheduledDuration}%`,
+                }"
+              ></div>
+            </template>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { onMounted, toRefs, computed } from '@vue/runtime-core';
+import { toRefs, computed, ref } from '@vue/runtime-core';
 
 export default {
   name: 'GantChart',
   props: {
-    // значение, возвращаемое функцией getTime()
-    timeFrom: { type: Number },
-    timeTo: { type: Number },
     // данные для графика
     flights: { type: Array },
   },
@@ -132,41 +218,59 @@ export default {
     return {};
   },
   setup(props) {
-    // TODO
-    // найти минимальный и максиальный часы и расчертить поле
-    // подготовить данные на вход
-    const { timeFrom, timeTo, flights } = toRefs(props);
-    const startTime = computed(() => {
-      const d = new Date(timeFrom.value);
-      return new Date(
-        d.getFullYear(),
-        d.getMonth(),
-        d.getDate(),
-        d.getHours()
-      ).getTime();
-    });
-    const endTime = computed(() => {
-      const d = new Date(timeTo.value);
+    // settings
+    const date = ref('2021-08-05T10:00');
+    const rangeHours = ref(4);
+    const width = ref(1280);
+    const leftHoursShift = 3;
+    const rightHoursShift = 24;
+
+    const { flights } = toRefs(props);
+
+    const timeShift = (date, hours) => {
+      const d = new Date(date);
       const currentTimeValue = new Date(
         d.getFullYear(),
         d.getMonth(),
         d.getDate(),
         d.getHours()
       );
-      currentTimeValue.setHours(currentTimeValue.getHours() + 1);
+      currentTimeValue.setHours(currentTimeValue.getHours() + hours);
       return currentTimeValue.getTime();
+    };
+    // Начало временной шкалы
+    const startTime = computed(() => {
+      return timeShift(date.value, -leftHoursShift);
     });
+
+    // Конец временной шкалы
+    const endTime = computed(() => {
+      const remains = (leftHoursShift + rightHoursShift) % rangeHours.value;
+      if (remains === 0) {
+        return timeShift(date.value, rightHoursShift);
+      } else {
+        return timeShift(
+          date.value,
+          rightHoursShift + +rangeHours.value - remains
+        );
+      }
+    });
+
     const timeBlocks = computed(() => {
-      return (endTime.value - startTime.value) / 1000 / 60 / 60;
+      return (
+        (endTime.value - startTime.value) / 1000 / 60 / 60 / +rangeHours.value
+      );
     });
     const timeMarks = computed(() => {
       const initialHours = new Date(startTime.value).getHours();
-      return Array.from(
-        { length: timeBlocks.value },
-        (_, i) => `${i + initialHours}:00`
-      );
+      return Array.from({ length: timeBlocks.value }, (_, i) => {
+        const time = i * +rangeHours.value + initialHours;
+        if (time > 23) {
+          return `${time - 24}:00`;
+        }
+        return `${time}:00`;
+      });
     });
-    console.log('timeMarks', timeMarks.value);
     const normalizedTime = (ms) => {
       return ((ms - startTime.value) / (endTime.value - startTime.value)) * 100;
     };
@@ -192,11 +296,23 @@ export default {
         return res;
       }, {});
     });
-    console.log('chartData', chartData.value);
-    onMounted(() => {
-      console.log('timeBlocks', timeBlocks.value);
-    });
-    return { chartData, timeBlocks, timeMarks };
+    const currentTimePosition = normalizedTime(new Date(date.value).getTime());
+
+    const getColor = () => {
+      let colors = ['#D15EB8', '#7291E0', '#A67DD9', '#D76872'];
+
+      return colors[Math.floor(Math.random() * colors.length)];
+    };
+    return {
+      date,
+      rangeHours,
+      chartData,
+      timeBlocks,
+      timeMarks,
+      currentTimePosition,
+      getColor,
+      width,
+    };
   },
 };
 </script>

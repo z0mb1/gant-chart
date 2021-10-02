@@ -12,17 +12,17 @@ body {
 
 <template>
   <div class="app-layout">
-    <GantChart :flights="flights" />
+    <Gantt :flights="flights" />
   </div>
 </template>
 
 <script>
-import GantChart from './components/GantChart.vue';
+import Gantt from './components/Gantt.vue';
 
 export default {
   name: 'App',
   components: {
-    GantChart,
+    Gantt,
   },
   data: function() {
     return {

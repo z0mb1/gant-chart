@@ -210,11 +210,8 @@ export default {
     --border: 1px solid rgba(0, 0, 0, 0.5);
   }
   .gantt-chart__container {
-    width: 100%;
-    overflow: hidden;
-    display: flex;
+    @apply w-full overflow-hidden flex box-border;
     border: var(--border);
-    box-sizing: border-box;
   }
   .gantt-chart__left {
     width: var(--left-width);
@@ -226,13 +223,9 @@ export default {
     overflow-y: hidden;
   }
   .gantt-chart__line {
-    display: flex;
+    @apply flex relative flex-grow w-full;
     height: var(--row-height);
     border-bottom: var(--border);
-    position: relative;
-    flex-grow: 1;
-    display: flex;
-    width: 100%;
   }
   .gantt-chart__line--current {
     height: 0px;
@@ -242,51 +235,43 @@ export default {
     border-bottom: none;
   }
   .gantt-chart__line-name {
+    @apply flex items-center justify-center;
     border-bottom: var(--border);
     width: var(--left-width);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: var(--row-height);
   }
   .gantt-chart__line-name:last-child {
     border-bottom: none;
   }
   .gantt-chart__block-flight {
-    cursor: pointer;
+    @apply cursor-pointer absolute z-10 text-center;
     height: 30px;
-    position: absolute;
     border: 1px solid rgba(0, 0, 0, 0.5);
     top: 10px;
     border-radius: 4px;
     transition: transform 0.25s;
-    z-index: 9;
     line-height: 30px;
-    text-align: center;
+    font-size: 12px;
   }
   .gantt-chart__block-flight:hover {
     transform: scale(1.03);
   }
   .gantt-chart__block-sheduled {
+    @apply absolute z-10;
     height: 5px;
-    position: absolute;
     color: rgba(0, 0, 0, 0.5);
     background: #ffffff;
     border: 1px solid currentColor;
     top: 4px;
     border-radius: 2px;
-    z-index: 9;
   }
   .gantt-chart__mark {
-    text-align: center;
-    flex-shrink: 0;
-    flex-grow: 0;
-    position: relative;
+    @apply relative text-center flex-grow-0 flex-shrink-0;
     width: 75px;
   }
   .gantt-chart__mark:after {
+    @apply absolute;
     content: '';
-    position: absolute;
     width: 1px;
     background: darkblue;
     height: 100vh;
@@ -295,30 +280,25 @@ export default {
     z-index: 0;
   }
   .gantt-chart__date {
+    @apply w-full box-border;
     height: var(--row-height);
-    width: 100%;
     border: var(--border);
     border-bottom: none;
     line-height: var(--row-height);
     padding-left: var(--left-width);
-    box-sizing: border-box;
   }
   .gantt-chart__current {
-    position: absolute;
+    @apply absolute h-screen z-999 top-0;
     width: 3px;
     background-color: #d2d42a;
-    height: 100vh;
-    top: 0;
-    z-index: 999;
   }
   .gantt-chart__block-flight__arrival {
-    position: absolute;
-    top: 0;
-    left: calc(100% + 4px);
+    @apply absolute top-0 right-1;
+    font-size: 10px;
   }
   .gantt-chart__block-flight__departure {
-    position: absolute;
-    top: 0;
+    @apply absolute top-0 left-1;
     right: calc(100% + 4px);
+    font-size: 10px;
   }
 </style>

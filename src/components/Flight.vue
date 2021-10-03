@@ -67,10 +67,10 @@
   <div
     class="gantt-flight"
     :style="{
+      ...style,
       left: `${departureValue}%`,
       width: `${duration}%`,
       backgroundColor: color,
-      opacity: opacity,
     }"
     :class="type"
     @click.stop="$emit('select')"
@@ -89,7 +89,6 @@
     :style="{
       left: `${sheduledOffValue}%`,
       width: `${sheduledDuration}%`,
-      opacity: opacity,
     }"
   ></div>
 </template>
@@ -119,7 +118,7 @@ export default {
         return ['main', 'backward', 'onward'].includes(val);
       },
     },
-    opacity: { type: String },
+    style: { type: Object },
   },
   created() {},
   mounted() {},

@@ -21,13 +21,9 @@
   overflow-y: hidden;
 }
 .gant-chart__line {
-  display: flex;
+  @apply overflow-hidden flex relative w-full flex-grow;
   height: var(--row-height);
   border-bottom: var(--border);
-  position: relative;
-  flex-grow: 1;
-  display: flex;
-  width: 100%;
 }
 .gant-chart__line--current {
   height: 0px;

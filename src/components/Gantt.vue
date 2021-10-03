@@ -23,7 +23,12 @@
           {{ aircraft }}
         </div>
       </div>
-      <div class="gantt-chart__right" ref="rightBlock" @click="highlight(null)" :style="{'--height': height}">
+      <div
+        class="gantt-chart__right"
+        ref="rightBlock"
+        @click="highlight(null)"
+        :style="{ '--height': height }"
+      >
         <div :style="{ width: `${width}px` }">
           <div class="gantt-chart__line gantt-chart__line--current">
             <div
@@ -43,7 +48,7 @@
             </div>
           </div>
           <div
-            class="gantt-chart__line"
+            class="gantt-chart__line overflow-hidden"
             v-for="(items, idx) in Object.values(chartData)"
             :key="idx"
           >
@@ -220,7 +225,7 @@ export default {
     },
   },
   mounted() {
-    this.height = `${this.$refs.rightBlock.offsetHeight}px`
+    this.height = `${this.$refs.rightBlock.offsetHeight}px`;
   },
 };
 </script>

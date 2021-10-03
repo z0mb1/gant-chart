@@ -12,7 +12,13 @@
     :departureStationIataCode="flightData.departureStationIataCode"
     :color="flightData.color"
     type="main"
-    :opacity="isHidden ? '0.5' : '1'"
+    :style="{
+      opacity: isHidden ? '0.5' : '1',
+      boxShadow:
+        flightData.backwardLeg || flightData.onwardLeg
+          ? '4px 4px 2px 1px rgba(0, 0, 255, 0.4)'
+          : 'none',
+    }"
     @select="$emit('select')"
   />
   <template v-if="isHighlight">
@@ -44,7 +50,7 @@ export default {
   props: {
     flightData: { type: Object },
     isHighlight: { type: Boolean },
-    isHidden: {type: Boolean}
+    isHidden: { type: Boolean },
   },
   created() {},
   mounted() {},

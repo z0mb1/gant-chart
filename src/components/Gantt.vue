@@ -144,21 +144,15 @@ export default {
         const currentFlightData = this.prepareFlightData(curr);
         const color = this.getColor();
         currentFlightData.color = color;
-        if (curr.backwardLeg) {
-          currentFlightData.backwardLeg = this.prepareFlightData(
-            curr.backwardLeg,
-            'scheduledOffBlockTime',
-            'scheduledOnBlockTime'
-          );
-          currentFlightData.backwardLeg.color = color;
-        }
-        if (curr.onwardLeg) {
-          currentFlightData.onwardLeg = this.prepareFlightData(
-            curr.onwardLeg,
-            'scheduledOffBlockTime',
-            'scheduledOnBlockTime'
-          );
-          currentFlightData.onwardLeg.color = color;
+        for (let key of ['backwardLeg', 'onwardLeg']) {
+          if (curr[key]) {
+            currentFlightData[key] = this.prepareFlightData(
+              curr[key],
+              'scheduledOffBlockTime',
+              'scheduledOnBlockTime'
+            );
+            currentFlightData[key].color = color;
+          }
         }
         if (curr.aircraftRegistration) {
           if (res[curr.aircraftRegistration]) {
@@ -173,9 +167,6 @@ export default {
   },
 
   methods: {
-    test() {
-      console.log('test');
-    },
     highlight(val) {
       this.highlightItem = val;
     },

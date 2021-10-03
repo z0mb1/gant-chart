@@ -12,11 +12,10 @@
     :departureStationIataCode="flightData.departureStationIataCode"
     :color="flightData.color"
     type="main"
-    :opacity="opacity"
-    @mouseover="highlightGroup"
-    @mouseleave="highlightGroupOff"
+    :opacity="isHidden ? '0.5' : '1'"
+    @select="$emit('select')"
   />
-  <template v-if="showLinkedFlights">
+  <template v-if="isHighlight">
     <Flight
       v-if="flightData.backwardLeg"
       v-bind="flightData.backwardLeg"
@@ -39,27 +38,17 @@ export default {
   name: 'FlightGroup',
   components: { Flight },
   data() {
-    return {
-      showLinkedFlights: false,
-    };
+    return {};
   },
-  emits: ['highlightOn', 'highlightOff'],
+  emits: ['select'],
   props: {
     flightData: { type: Object },
-    opacity: {type: String}
+    isHighlight: { type: Boolean },
+    isHidden: {type: Boolean}
   },
   created() {},
   mounted() {},
-  methods: {
-    highlightGroup() {
-      this.showLinkedFlights = true
-      this.$emit('highlightOn')
-    },
-    highlightGroupOff() {
-      this.showLinkedFlights = false
-      this.$emit('highlightOff')
-    }
-  },
+  methods: {},
   computed: {},
 };
 </script>

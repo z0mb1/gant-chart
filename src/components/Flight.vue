@@ -73,8 +73,7 @@
       opacity: opacity,
     }"
     :class="type"
-    @mouseover="$emit('mouseover')"
-    @mouseleave="$emit('mouseleave')"
+    @click.stop="$emit('select')"
   >
     {{ `${operationCarrier} ${flightNumber}` }}
     <div class="gantt-flight__arrival">
@@ -102,7 +101,7 @@ export default {
   data() {
     return {};
   },
-  emits: ['mouseover', 'mouseleave'],
+  emits: ['select'],
   props: {
     departureValue: { type: Number },
     arrivalValue: { type: Number },

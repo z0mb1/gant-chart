@@ -23,7 +23,7 @@
           {{ aircraft }}
         </div>
       </div>
-      <div class="gantt-chart__right" ref="rightBlock" :style="{'--height': height}">
+      <div class="gantt-chart__right" ref="rightBlock" @click="highlight(null)" :style="{'--height': height}">
         <div :style="{ width: `${width}px` }">
           <div class="gantt-chart__line gantt-chart__line--current">
             <div
@@ -51,13 +51,9 @@
               v-for="(flightData, itemIdx) in items"
               :flightData="flightData"
               :key="itemIdx"
-              :opacity="
-                highlightItem && `${idx}-${itemIdx}` !== highlightItem
-                  ? '0.5'
-                  : '1'
-              "
-              @highlightOn="highlight(`${idx}-${itemIdx}`)"
-              @highlightOff="highlight(null)"
+              :isHighlight="`${idx}-${itemIdx}` === highlightItem"
+              :isHidden="highlightItem && `${idx}-${itemIdx}` !== highlightItem"
+              @select="highlight(`${idx}-${itemIdx}`)"
             />
           </div>
         </div>
@@ -172,6 +168,9 @@ export default {
   },
 
   methods: {
+    test() {
+      console.log('test');
+    },
     highlight(val) {
       this.highlightItem = val;
     },

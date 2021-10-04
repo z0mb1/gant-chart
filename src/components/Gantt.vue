@@ -193,6 +193,8 @@ export default {
         operationCarrier: flight.operationCarrier,
         arrivalStationIataCode: flight.arrivalStationIataCode,
         departureStationIataCode: flight.departureStationIataCode,
+        aircraftType: flight.aircraftType,
+        aircraftConfiguration: flight.aircraftConfiguration
       };
       return currentFlightData;
     },

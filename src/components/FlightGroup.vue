@@ -10,6 +10,8 @@
     :flightNumber="flightData.flightNumber"
     :arrivalStationIataCode="flightData.arrivalStationIataCode"
     :departureStationIataCode="flightData.departureStationIataCode"
+    :aircraftType="flightData.aircraftType"
+    :aircraftConfiguration="flightData.aircraftConfiguration"
     :color="flightData.color"
     type="main"
     :style="{

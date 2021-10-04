@@ -66,6 +66,12 @@
   ></div>
   <div
     class="gantt-flight"
+    v-tippy="{
+      content: `flightNumber: ${flightNumber || '-'} / aircraftType: ${aircraftType || '-'} / aircraftConfiguration: ${aircraftConfiguration  || '-'}`,
+      trigger: 'mouseenter click',
+      touch: true,
+      theme: 'custom'
+    }"
     :style="{
       ...style,
       left: `${departureValue}%`,
@@ -110,6 +116,8 @@ export default {
     flightNumber: { type: String },
     arrivalStationIataCode: { type: String },
     departureStationIataCode: { type: String },
+    aircraftType: { type: String },
+    aircraftConfiguration: { type: String },
     color: { type: String },
     connectValue: { type: Number },
     type: {
